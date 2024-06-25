@@ -1,0 +1,24 @@
+name: ainekko
+services:
+  ollama:
+    build:
+      dockerfile: ./apps/ollama/Dockerfile
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    ports:
+      - 3001:11434
+    volumes:
+      - ./apps/ollama/.ollama/:/root/.ollama/
+  web:
+    build:
+      dockerfile: ./apps/web/Dockerfile
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+    ports:
+      - 3000:8080
+    volumes:
+      - web_backend_data:/app/backend/data
+volumes:
+  web_backend_data:
